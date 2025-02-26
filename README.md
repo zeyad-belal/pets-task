@@ -107,10 +107,9 @@ Modify the pet profile screen to include:
 1. Create a new Supabase project
 2. Implement the required features
 3. Update this README with:
-   - Your Supabase project setup instructions
    - Any additional dependencies you've added
    - Any assumptions or decisions you've made
-4. Push your code to a repository
+4. Push your code to your own repository
 5. Share the repository URL
 
 ## Time Expectation
