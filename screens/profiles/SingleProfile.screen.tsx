@@ -7,85 +7,155 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Profile } from '../../types';
+import { Pet, BodyConditionLog, WeightLog } from '../../types';
 
 type RootStackParamList = {
-  SingleProfile: { userId: string };
+  SingleProfile: { id: string };
 };
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SingleProfile'>;
 
 // Mock data for development
-const mockProfile: Profile = {
+const mockPet: Pet = {
   id: '1',
-  user_id: '123',
-  username: 'johndoe',
-  full_name: 'John Doe',
-  avatar_url: 'https://example.com/avatar.jpg',
-  updated_at: new Date().toISOString()
+  name: 'Max',
+  species: 'Dog',
+  breed: 'Golden Retriever',
+  age: 3,
+  created_at: new Date().toISOString(),
+  owner_id: '123',
+  logs_weight: [
+    { id: '1', pet_id: '1', weight: 25.5, date: '2024-02-25T10:00:00Z' },
+    { id: '2', pet_id: '1', weight: 26.0, date: '2024-01-25T10:00:00Z' },
+  ],
+  logs_bodycondition: [
+    { id: '1', pet_id: '1', body_condition: "3", date: '2024-02-25T10:00:00Z' },
+    { id: '2', pet_id: '1', body_condition: "4", date: '2024-01-25T10:00:00Z' },
+  ],
+  logs_vet_visits: [],
 };
 
-export const SingleProfileScreen: React.FC<Props> = ({ route, navigation }) => {
-  const userId = route.params?.userId;
-  const [profile, setProfile] = useState<Profile | null>(null);
+function getThisMonthLogs(logs_bodycondition: BodyConditionLog[], logs_weight: WeightLog[]) {
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+
+  const latestBodyConditionLog = logs_bodycondition
+    .filter(
+      (log) =>
+        new Date(log.date).getMonth() === currentMonth &&
+        new Date(log.date).getFullYear() === currentYear
+    )
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
+
+  const latestWeightLog = logs_weight
+    .filter(
+      (log) =>
+        new Date(log.date).getMonth() === currentMonth &&
+        new Date(log.date).getFullYear() === currentYear
+    )
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
+
+  return { latestBodyConditionLog, latestWeightLog };
+}
+
+const PetCard = ({ pet }: { pet: Pet }) => (
+  <View style={styles.card}>
+    <Text style={styles.name}>{pet.name}</Text>
+    <Text>Species: {pet.species}</Text>
+    <Text>Age: {pet.age} years</Text>
+  </View>
+);
+
+const LogsTable = ({ 
+  weightLogs, 
+  bodyConditionLogs 
+}: { 
+  weightLogs: WeightLog[], 
+  bodyConditionLogs: BodyConditionLog[] 
+}) => (
+  <View style={styles.table}>
+    <Text style={styles.tableHeader}>Recent Logs</Text>
+    {weightLogs.map((log, index) => (
+      <View key={index} style={styles.tableRow}>
+        <Text>Weight: {log.weight}kg</Text>
+        <Text>Date: {new Date(log.date).toLocaleDateString()}</Text>
+      </View>
+    ))}
+  </View>
+);
+
+const HealthStatus = ({ pet }: { pet: Pet }) => (
+  <View style={styles.healthStatus}>
+    <Text style={styles.tableHeader}>Health Status</Text>
+    <Text>Overall Health: {pet?.logs_weight.length > 3 ? 'Good' : 'Needs More Data'}</Text>
+    <Text>Last Vet Visit: 2 months ago</Text>
+  </View>
+);
+
+export const SingleProfileScreen: React.FC<Props> = ({ route }) => {
+  const { id } = route.params;
+  const [pet, setPet] = useState<Pet | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [thisMonthLogs, setThisMonthLogs] = useState<{
+    latestBodyConditionLog: BodyConditionLog | null;
+    latestWeightLog: WeightLog | null;
+  }>({
+    latestBodyConditionLog: null,
+    latestWeightLog: null,
+  });
 
   useEffect(() => {
-    if (!userId) {
-      setError('No user ID provided');
-      setLoading(false);
-      return;
-    }
-
-    // Simulate API call with mock data
-    const fetchProfile = async () => {
+    const fetchPet = async () => {
       try {
         // Simulate network delay
         await new Promise(resolve => setTimeout(resolve, 1000));
-        setProfile(mockProfile);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        setPet(mockPet);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProfile();
-  }, [userId]);
+    fetchPet();
+  }, [id]);
+
+  useEffect(() => {
+    if (pet) {
+      setThisMonthLogs(getThisMonthLogs(pet.logs_bodycondition, pet.logs_weight));
+    }
+  }, [pet]);
 
   if (loading) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+    return <ActivityIndicator style={styles.loader} />;
   }
 
-  if (error) {
+  if (!pet) {
     return (
       <View style={styles.container}>
-        <Text style={styles.errorText}>{error}</Text>
-      </View>
-    );
-  }
-
-  if (!profile) {
-    return (
-      <View style={styles.container}>
-        <Text>Profile not found</Text>
+        <Text>Pet not found</Text>
       </View>
     );
   }
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.profileHeader}>
-        <Text style={styles.username}>{profile.username}</Text>
-        {profile.full_name && (
-          <Text style={styles.fullName}>{profile.full_name}</Text>
-        )}
+      <PetCard pet={pet} />
+      
+      <View style={styles.monthSummary}>
+        <Text style={styles.tableHeader}>This Month's Summary</Text>
+        <Text>
+          Latest Weight: {thisMonthLogs.latestWeightLog?.weight || 'No data'} kg
+        </Text>
+        <Text>
+          Body Condition: {thisMonthLogs.latestBodyConditionLog?.body_condition || 'No data'}
+        </Text>
       </View>
+
+      <HealthStatus pet={pet} />
+      
+      <LogsTable 
+        weightLogs={pet.logs_weight} 
+        bodyConditionLogs={pet.logs_bodycondition} 
+      />
     </ScrollView>
   );
 };
@@ -93,24 +163,50 @@ export const SingleProfileScreen: React.FC<Props> = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     padding: 16,
+    backgroundColor: '#fff',
   },
-  profileHeader: {
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 20,
   },
-  username: {
+  card: {
+    padding: 16,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  name: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 8,
   },
-  fullName: {
-    fontSize: 16,
-    color: '#666',
+  table: {
+    marginTop: 16,
   },
-  errorText: {
-    color: 'red',
-    textAlign: 'center',
+  tableHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  tableRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  monthSummary: {
+    padding: 16,
+    backgroundColor: '#e6f3ff',
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  healthStatus: {
+    padding: 16,
+    backgroundColor: '#f0fff0',
+    borderRadius: 8,
+    marginBottom: 16,
   },
 }); 

@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SingleProfileScreen } from './screens/profiles/SingleProfile.screen';
 
 export type RootStackParamList = {
-  SingleProfile: { userId: string };
+  SingleProfile: { id: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -15,8 +15,8 @@ export default function App() {
         <Stack.Screen 
           name="SingleProfile" 
           component={SingleProfileScreen}
-          options={{ title: 'Profile' }}
-          initialParams={{ userId: '123' }}
+          options={{ title: 'Pet Profile' }}
+          initialParams={{ id: '1' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
