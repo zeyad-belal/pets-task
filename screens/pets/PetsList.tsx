@@ -21,7 +21,7 @@ type RootStackParamList = {
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PetsList'>;
 
-export const PetsListScreen: React.FC<Props> = ({ navigation }) => {
+export const PetsList: React.FC<Props> = ({ navigation }) => {
   const { user, signOut } = useAuth();
   const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);

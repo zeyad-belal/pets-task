@@ -20,7 +20,7 @@ type RootStackParamList = {
 
 type Props = NativeStackScreenProps<RootStackParamList, "AddPet">;
 
-export const AddPetScreen: React.FC<Props> = ({ navigation }) => {
+export const AddPet: React.FC<Props> = ({ navigation }) => {
   const { user } = useAuth();
   const [name, setName] = useState("");
   const [species, setSpecies] = useState("");

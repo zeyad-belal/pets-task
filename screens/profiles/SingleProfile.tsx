@@ -215,7 +215,7 @@ const HealthStatus = ({ pet }: { pet: Pet }) => {
   );
 };
 
-export const SingleProfileScreen: React.FC<Props> = ({ route, navigation }) => {
+export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
   const { signOut } = useAuth();
   const { id } = route.params;
   const [pet, setPet] = useState<Pet | null>(null);

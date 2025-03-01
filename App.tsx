@@ -2,11 +2,11 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ActivityIndicator, View } from 'react-native';
-import { SingleProfileScreen } from './screens/profiles/SingleProfile.screen';
-import { SignInScreen } from './screens/auth/SignIn.screen';
-import { SignUpScreen } from './screens/auth/SignUp.screen';
-import { AddPetScreen } from './screens/pets/AddPet.screen';
-import { PetsListScreen } from './screens/pets/PetsList.screen';
+import { SingleProfile } from './screens/profiles/SingleProfile';
+import { SignIn } from './screens/auth/SignIn';
+import { SignUp } from './screens/auth/SignUp';
+import { AddPet } from './screens/pets/AddPet';
+import { PetsList } from './screens/pets/PetsList';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 export type RootStackParamList = {
@@ -37,17 +37,17 @@ const Navigation = () => {
           <>
             <Stack.Screen 
               name="PetsList" 
-              component={PetsListScreen}
+              component={PetsList}
               options={{ title: 'Your Pets', headerShown: false }}
             />
             <Stack.Screen 
               name="AddPet" 
-              component={AddPetScreen}
+              component={AddPet}
               options={{ title: 'Add Pet', headerShown: true }}
             />
             <Stack.Screen 
               name="SingleProfile" 
-              component={SingleProfileScreen}
+              component={SingleProfile}
               options={{ title: 'Pet Profile', headerShown: true }}
             />
           </>
@@ -56,12 +56,12 @@ const Navigation = () => {
           <>
             <Stack.Screen 
               name="SignIn" 
-              component={SignInScreen} 
+              component={SignIn} 
               options={{ title: 'Sign In', headerShown: false }}
             />
             <Stack.Screen 
               name="SignUp" 
-              component={SignUpScreen} 
+              component={SignUp} 
               options={{ title: 'Sign Up', headerShown: false }}
             />
           </>

@@ -19,7 +19,7 @@ type RootStackParamList = {
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
 
-export const SignUpScreen: React.FC<Props> = ({ navigation }) => {
+export const SignUp: React.FC<Props> = ({ navigation }) => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
