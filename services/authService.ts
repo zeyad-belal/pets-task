@@ -84,16 +84,4 @@ export const authService = {
       throw error;
     }
   },
-
-  async getCurrentUser(): Promise<User | null> {
-    // In a real app, you would use Supabase Auth or store the user in AsyncStorage
-    // For this demo, we'll just return null
-    return null;
-  },
-
-  async signOut(): Promise<void> {
-    // In a real app, you would use Supabase Auth or clear AsyncStorage
-    // For this demo, we'll just return
-    return;
-  },
 };

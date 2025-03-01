@@ -6,7 +6,6 @@ import {
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
-  Alert,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { petService } from '../../services/petService';
@@ -27,23 +26,23 @@ export const PetsList: React.FC<Props> = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchPets = async () => {
+    if (!user) return;
+
+    try {
+      setLoading(true);
+      setError(null);
+      const fetchedPets = await petService.getPets(user.id);
+      setPets(fetchedPets);
+    } catch (err) {
+      console.error('Error fetching pets:', err);
+      setError('Failed to load pets. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchPets = async () => {
-      if (!user) return;
-
-      try {
-        setLoading(true);
-        setError(null);
-        const fetchedPets = await petService.getPets(user.id);
-        setPets(fetchedPets);
-      } catch (err) {
-        console.error('Error fetching pets:', err);
-        setError('Failed to load pets. Please try again.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchPets();
   }, [user]);
 

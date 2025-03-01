@@ -1,3 +1,7 @@
+# ENV 
+  EXPO_PUBLIC_SUPABASE_URL=https://wtibbkqyzojrzfakuvwh.supabase.co
+  EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0aWJia3F5em9qcnpmYWt1dndoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA3ODU0MzIsImV4cCI6MjA1NjM2MTQzMn0.LLhyvjL7kzzqGwQbZ2Ano6eiGGQ_W0WKJCKTQd3VAPk
+
 # Pet Health Tracker
 
 A cross-platform mobile application for tracking pet health information including weight logs, body condition assessments, and veterinary visits.

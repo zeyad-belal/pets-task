@@ -233,75 +233,75 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
     latestWeightLog: null,
   });
 
-  useEffect(() => {
-    const fetchPet = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  const fetchPet = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-        // Use Supabase to fetch the pet data
-        const fetchedPet = await petService.getPetById(id);
+      // Use Supabase to fetch the pet data
+      const fetchedPet = await petService.getPetById(id);
 
-        if (fetchedPet) {
-          setPet(fetchedPet);
-        } else {
-          // For demo purposes, if no pet is found in Supabase, use mock data
-          // In a real app, you would show an error message
-          const mockPet: Pet = {
-            id: "1",
-            name: "Max",
-            species: "Dog",
-            breed: "Golden Retriever",
-            age: 3,
-            created_at: new Date().toISOString(),
-            owner_id: "123",
-            logs_weight: [
-              {
-                id: "1",
-                pet_id: "1",
-                weight: 25.5,
-                date: "2024-02-25T10:00:00Z",
-              },
-              {
-                id: "2",
-                pet_id: "1",
-                weight: 26.0,
-                date: "2024-01-25T10:00:00Z",
-              },
-            ],
-            logs_bodycondition: [
-              {
-                id: "1",
-                pet_id: "1",
-                body_condition: "3",
-                date: "2024-02-25T10:00:00Z",
-              },
-              {
-                id: "2",
-                pet_id: "1",
-                body_condition: "4",
-                date: "2024-01-25T10:00:00Z",
-              },
-            ],
-            logs_vet_visits: [
-              {
-                id: "1",
-                pet_id: "1",
-                notes: "Annual checkup. All vaccinations updated.",
-                date: "2024-02-15T14:30:00Z",
-              },
-            ],
-          };
-          setPet(mockPet);
-        }
-      } catch (err) {
-        console.error("Error fetching pet:", err);
-        setError("Failed to load pet data. Please try again.");
-      } finally {
-        setLoading(false);
+      if (fetchedPet) {
+        setPet(fetchedPet);
+      } else {
+        // For demo purposes, if no pet is found in Supabase, use mock data
+        // In a real app, you would show an error message
+        const mockPet: Pet = {
+          id: "1",
+          name: "Max",
+          species: "Dog",
+          breed: "Golden Retriever",
+          age: 3,
+          created_at: new Date().toISOString(),
+          owner_id: "123",
+          logs_weight: [
+            {
+              id: "1",
+              pet_id: "1",
+              weight: 25.5,
+              date: "2024-02-25T10:00:00Z",
+            },
+            {
+              id: "2",
+              pet_id: "1",
+              weight: 26.0,
+              date: "2024-01-25T10:00:00Z",
+            },
+          ],
+          logs_bodycondition: [
+            {
+              id: "1",
+              pet_id: "1",
+              body_condition: "3",
+              date: "2024-02-25T10:00:00Z",
+            },
+            {
+              id: "2",
+              pet_id: "1",
+              body_condition: "4",
+              date: "2024-01-25T10:00:00Z",
+            },
+          ],
+          logs_vet_visits: [
+            {
+              id: "1",
+              pet_id: "1",
+              notes: "Annual checkup. All vaccinations updated.",
+              date: "2024-02-15T14:30:00Z",
+            },
+          ],
+        };
+        setPet(mockPet);
       }
-    };
+    } catch (err) {
+      console.error("Error fetching pet:", err);
+      setError("Failed to load pet data. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchPet();
   }, [id]);
 
