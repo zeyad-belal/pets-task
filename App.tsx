@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ActivityIndicator, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { SingleProfile } from './screens/profiles/SingleProfile';
 import { SignIn } from './screens/auth/SignIn';
 import { SignUp } from './screens/auth/SignUp';
@@ -73,8 +74,10 @@ const Navigation = () => {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <Navigation />
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <Navigation />
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }

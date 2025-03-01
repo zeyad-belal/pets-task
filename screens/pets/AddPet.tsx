@@ -9,6 +9,7 @@ import {
   Alert,
   ScrollView,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { petService } from "../../services/petService";
 import { useAuth } from "../../contexts/AuthContext";
@@ -30,6 +31,7 @@ export const AddPet: React.FC<Props> = ({ navigation }) => {
   const [bodyCondition, setBodyCondition] = useState("");
   const [vetNotes, setVetNotes] = useState("");
   const [loading, setLoading] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const handleAddPet = async () => {
     if (!name || !species || !age || !weight) {
@@ -104,7 +106,12 @@ export const AddPet: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView 
+      contentContainerStyle={[
+        styles.container,
+        { paddingBottom: Math.max(20, insets.bottom) }
+      ]}
+    >
       <Text style={styles.title}>Add a New Pet</Text>
 
       <View style={styles.form}>

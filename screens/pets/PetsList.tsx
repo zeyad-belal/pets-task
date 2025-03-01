@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { petService } from '../../services/petService';
 import { useAuth } from '../../contexts/AuthContext';
@@ -25,6 +26,7 @@ export const PetsList: React.FC<Props> = ({ navigation }) => {
   const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const insets = useSafeAreaInsets();
 
   const fetchPets = async () => {
     if (!user) return;
@@ -56,7 +58,7 @@ export const PetsList: React.FC<Props> = ({ navigation }) => {
 
   if (loading) {
     return (
-      <View style={styles.centered}>
+      <View style={[styles.centered, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
         <ActivityIndicator size="large" color="#007AFF" />
       </View>
     );
@@ -64,7 +66,7 @@ export const PetsList: React.FC<Props> = ({ navigation }) => {
 
   if (error) {
     return (
-      <View style={styles.centered}>
+      <View style={[styles.centered, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
         <Text style={styles.errorText}>{error}</Text>
         <TouchableOpacity
           style={styles.button}
@@ -77,7 +79,7 @@ export const PetsList: React.FC<Props> = ({ navigation }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
       <View style={styles.header}>
         <Text style={styles.title}>Your Pets</Text>
         <View style={styles.headerButtons}>
@@ -91,7 +93,7 @@ export const PetsList: React.FC<Props> = ({ navigation }) => {
       </View>
 
       {pets.length === 0 ? (
-        <View style={styles.emptyContainer}>
+        <View style={[styles.emptyContainer, { paddingBottom: insets.bottom }]}>
           <Text style={styles.emptyText}>You don't have any pets yet.</Text>
           <TouchableOpacity style={styles.button} onPress={handleAddPet}>
             <Text style={styles.buttonText}>Add Your First Pet</Text>

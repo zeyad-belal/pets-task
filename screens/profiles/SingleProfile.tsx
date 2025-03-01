@@ -10,6 +10,7 @@ import {
   TextInput,
   Image,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Pet, BodyConditionLog, WeightLog, VetVisitLog } from "../../types";
 import { petService } from "../../services/petService";
@@ -225,6 +226,7 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
   const [activeTab, setActiveTab] = useState<
     "weight" | "bodyCondition" | "vetVisits"
   >("weight");
+  const insets = useSafeAreaInsets();
   const [thisMonthLogs, setThisMonthLogs] = useState<{
     latestBodyConditionLog: BodyConditionLog | null;
     latestWeightLog: WeightLog | null;
@@ -429,13 +431,15 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
 
   if (loading) {
     return (
-      <ActivityIndicator style={styles.loader} size="large" color="#007AFF" />
+      <View style={[styles.container, { paddingBottom: insets.bottom }]}>
+        <ActivityIndicator style={styles.loader} size="large" color="#007AFF" />
+      </View>
     );
   }
 
   if (error) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { paddingBottom: insets.bottom }]}>
         <Text style={styles.errorText}>{error}</Text>
         <Button
           title="Retry"
@@ -447,7 +451,7 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
 
   if (!pet) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { paddingBottom: insets.bottom }]}>
         <Text style={styles.errorText}>Pet not found</Text>
         <Button title="Go Back" onPress={() => navigation.goBack()} />
       </View>
@@ -455,7 +459,7 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       <View style={[styles.headerSection, isLogsCollapsed && styles.expandedHeaderSection]}>
         <ScrollView>
           <View style={styles.headerRow}>
@@ -490,7 +494,11 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
         </ScrollView>
       </View>
 
-      <View style={[styles.logsSection, isLogsCollapsed && styles.collapsedLogsSection]}>
+      <View style={[
+        styles.logsSection, 
+        isLogsCollapsed && styles.collapsedLogsSection,
+        { paddingBottom: isLogsCollapsed ? insets.bottom : 0 }
+      ]}>
         <TouchableOpacity 
           style={styles.logsHeader}
           onPress={() => setIsLogsCollapsed(!isLogsCollapsed)}

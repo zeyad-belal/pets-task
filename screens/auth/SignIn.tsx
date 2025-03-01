@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -23,6 +24,7 @@ export const SignIn: React.FC<Props> = ({ navigation }) => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const { signIn } = useAuth();
 
@@ -44,7 +46,10 @@ export const SignIn: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[
+      styles.container,
+      { paddingTop: insets.top, paddingBottom: insets.bottom }
+    ]}>
       <Text style={styles.title}>Pet Health Tracker</Text>
       <Text style={styles.subtitle}>Sign In</Text>
 
