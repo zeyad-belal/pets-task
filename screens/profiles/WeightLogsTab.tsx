@@ -81,6 +81,8 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     paddingBottom: 80,
+    marginBottom: 90,
+    paddingTop: 12,
   },
   addLogContainer: {
     flexDirection: "row",

@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Pet, BodyConditionLog, WeightLog, VetVisitLog } from "../../types";
+import { Pet, BodyConditionLog, WeightLog } from "../../types";
 import { petService } from "../../services/petService";
 import { useAuth } from "../../contexts/AuthContext";
 import { WeightLogsTab } from "./WeightLogsTab";
