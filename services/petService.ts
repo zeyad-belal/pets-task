@@ -295,11 +295,10 @@ export const petService = {
         body: 'body_condition_logs',
         vet: 'vet_visit_logs'
       }[logType];
-  
       const { error } = await supabase
-        .from(table)
-        .delete()
-        .eq('id', id);
+      .from(table)
+      .delete()
+      .eq('id', id);
   
       if (error) throw error;
     }

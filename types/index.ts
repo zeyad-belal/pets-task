@@ -20,6 +20,7 @@ export interface Profile {
   updated_at?: any;
 }
 
+
 export interface WeightLog {
   id: string;
   pet_id: string;
@@ -53,8 +54,8 @@ export const logsStyles : any  = {
   tabContent: {
     flex: 1,
     padding: 16,
-    paddingBottom: 80,
-    marginBottom: 90,
+    paddingBottom: 350,
+    marginBottom: 80,
     paddingTop: 12,
   },
   addLogContainer: {
@@ -128,14 +129,6 @@ export const logsStyles : any  = {
     marginBottom: 16,
   },
   logItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
-    alignItems: "center",
-  },
-  vetLogItem: {
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#e0e0e0",
@@ -166,4 +159,82 @@ export const logsStyles : any  = {
     marginRight: 12,
     alignSelf: "center",
   },
+  logItemContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    position: 'relative',
+  },
+
+  menuButton: {
+    padding: 8,
+  },
+
+  menuDots: {
+    fontSize: 20,
+    color: '#666',
+  },
+
+  dropdown: {
+    position: 'absolute',
+    right: 20,
+    top: '22%',
+    backgroundColor: 'white',
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    zIndex: 1000,
+  },
+
+  dropdownItem: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    minWidth: 100,
+  },
+
+  deleteItem: {
+    borderBottomWidth: 0,
+  },
+
+  deleteText: {
+    color: '#ff3b30',
+  },
+
+  editContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+
+  editInput: {
+    flex: 1,
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+  },
+
+  saveButton: {
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+
+  saveButtonText: {
+    color: 'white',
+    fontWeight: '500',
+  },
 }
+
+
+export type EditingLog = {
+  id: string;
+  weight: string;
+  date: Date;
+} | null;

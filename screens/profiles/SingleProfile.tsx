@@ -289,12 +289,15 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
 
   // Render the active tab content
   const renderTabContent = () => {
+    if(!pet) return null;
+
     switch (activeTab) {
       case "weight":
         return (
           <WeightLogsTab
             logs={pet?.logs_weight || []}
             onAddNew={handleAddWeightLog}
+            petId={pet.id}
           />
         );
       case "bodyCondition":
@@ -302,6 +305,7 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
           <BodyConditionTab
             logs={pet?.logs_bodycondition || []}
             onAddNew={handleAddBodyConditionLog}
+            petId={pet.id}
           />
         );
       case "vetVisits":
@@ -309,6 +313,7 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
           <VetVisitsTab
             logs={pet?.logs_vet_visits || null}
             onAddNew={handleAddVetVisit}
+            petId={pet.id}
           />
         );
       default:
@@ -344,7 +349,7 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
       </View>
     );
   }
-
+console.log('pet,',pet)
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       <View
