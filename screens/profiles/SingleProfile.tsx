@@ -7,7 +7,6 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Button,
-  TextInput,
   Image,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -15,7 +14,9 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Pet, BodyConditionLog, WeightLog, VetVisitLog } from "../../types";
 import { petService } from "../../services/petService";
 import { useAuth } from "../../contexts/AuthContext";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { WeightLogsTab } from "./WeightLogsTab";
+import { BodyConditionTab } from "./BodyConditionTab";
+import { VetVisitsTab } from "./VetVisitsTab";
 
 type RootStackParamList = {
   SingleProfile: { id: string };
@@ -59,197 +60,6 @@ const PetCard = ({ pet }: { pet: Pet }) => (
     <Text>Age: {pet.age} years</Text>
   </View>
 );
-
-// Tab components
-const WeightLogsTab = ({
-  logs,
-  onAddNew,
-}: {
-  logs: WeightLog[];
-  onAddNew: (weight: number, date: Date) => void;
-}) => {
-  const [weight, setWeight] = useState("");
-  const [date, setDate] = useState(new Date());
-
-  const handleAddWeight = () => {
-    if (weight.trim() === "") return;
-    const weightValue = parseFloat(weight);
-    if (isNaN(weightValue)) return;
-
-    onAddNew(weightValue, date);
-    setWeight("");
-  };
-
-  const onDateChange = (event: any, selectedDate?: Date) => {
-    if (selectedDate) {
-      setDate(selectedDate);
-    }
-  };
-
-  return (
-    <View style={styles.tabContentContainer}>
-      <ScrollView style={styles.tabContent}>
-        {logs.length > 0 ? (
-          logs.map((log) => (
-            <View key={log.id} style={styles.logItem}>
-              <Text style={styles.logValue}>{log.weight} kg</Text>
-              <Text style={styles.logDate}>
-                {new Date(log.date).toLocaleDateString()}
-              </Text>
-            </View>
-          ))
-        ) : (
-          <Text style={styles.noDataText}>No weight logs available</Text>
-        )}
-      </ScrollView>
-
-      <View style={styles.addLogContainer}>
-        <TextInput
-          style={styles.logInput}
-          placeholder="Enter weight in kg"
-          value={weight}
-          onChangeText={setWeight}
-          keyboardType="numeric"
-        />
-        <View style={styles.datePicker}>
-          <DateTimePicker value={date} mode="date" onChange={onDateChange} />
-        </View>
-
-        <TouchableOpacity style={styles.addLogButton} onPress={handleAddWeight}>
-          <Text style={styles.addLogButtonText}>Add</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
-
-const BodyConditionTab = ({
-  logs,
-  onAddNew,
-}: {
-  logs: BodyConditionLog[];
-  onAddNew: (condition: string, date: Date) => void;
-}) => {
-  const [bodyCondition, setBodyCondition] = useState("");
-  const [date, setDate] = useState(new Date());
-
-  const handleAddBodyCondition = () => {
-    if (bodyCondition.trim() === "") return;
-    onAddNew(bodyCondition, date);
-    setBodyCondition("");
-  };
-
-  const onDateChange = (event: any, selectedDate?: Date) => {
-    if (selectedDate) {
-      setDate(selectedDate);
-    }
-  };
-
-  return (
-    <View style={styles.tabContentContainer}>
-      <ScrollView style={styles.tabContent}>
-        {logs.length > 0 ? (
-          logs.map((log) => (
-            <View key={log.id} style={styles.logItem}>
-              <Text style={styles.logValue}>
-                Body Condition: {log.body_condition}
-              </Text>
-              <Text style={styles.logDate}>
-                {new Date(log.date).toLocaleDateString()}
-              </Text>
-            </View>
-          ))
-        ) : (
-          <Text style={styles.noDataText}>
-            No body condition logs available
-          </Text>
-        )}
-      </ScrollView>
-
-      <View style={styles.addLogContainer}>
-        <TextInput
-          style={styles.logInput}
-          placeholder="Enter body condition"
-          value={bodyCondition}
-          onChangeText={setBodyCondition}
-        />
-        <View style={styles.datePicker}>
-          <DateTimePicker value={date} mode="date" onChange={onDateChange} />
-        </View>
-        <TouchableOpacity
-          style={styles.addLogButton}
-          onPress={handleAddBodyCondition}
-        >
-          <Text style={styles.addLogButtonText}>Add</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
-
-const VetVisitsTab = ({
-  logs,
-  onAddNew,
-}: {
-  logs: VetVisitLog[] | null;
-  onAddNew: (notes: string, date: Date) => void;
-}) => {
-  const [notes, setNotes] = useState("");
-  const [date, setDate] = useState(new Date());
-
-  const handleAddVetVisit = () => {
-    if (notes.trim() === "") return;
-    onAddNew(notes, date);
-    setNotes("");
-  };
-
-  const onDateChange = (event: any, selectedDate?: Date) => {
-    if (selectedDate) {
-      setDate(selectedDate);
-    }
-  };
-
-  return (
-    <View style={styles.tabContentContainer}>
-      <ScrollView style={styles.tabContent}>
-        {logs && logs.length > 0 ? (
-          logs.map((log) => (
-            <View key={log.id} style={styles.vetLogItem}>
-              <Text style={styles.vetLogNotes}>{log.notes}</Text>
-              <Text style={styles.logDate}>
-                {new Date(log.date).toLocaleDateString()}
-              </Text>
-            </View>
-          ))
-        ) : (
-          <Text style={styles.noDataText}>No vet visit logs available</Text>
-        )}
-      </ScrollView>
-
-      <View style={styles.addLogContainer}>
-        <TextInput
-          style={[styles.logInput, styles.logInputMultiline]}
-          placeholder="Enter vet visit notes"
-          value={notes}
-          onChangeText={setNotes}
-          multiline
-          numberOfLines={2}
-        />
-
-        <View style={styles.datePicker}>
-          <DateTimePicker value={date} mode="date" onChange={onDateChange} />
-        </View>
-
-        <TouchableOpacity
-          style={styles.addLogButton}
-          onPress={handleAddVetVisit}
-        >
-          <Text style={styles.addLogButtonText}>Add</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
 
 const HealthStatus = ({ pet }: { pet: Pet }) => {
   const lastVetVisit =
