@@ -2,6 +2,8 @@ import { createClient } from '@supabase/supabase-js';
 import { Pet, WeightLog, BodyConditionLog, VetVisitLog } from '../types';
 import 'react-native-url-polyfill/auto';
 
+type LogType = 'weight' | 'body' | 'vet';
+
 // Using environment variables for Supabase credentials
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
 const supabaseKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -264,5 +266,41 @@ export const petService = {
       console.error('Error deleting vet visit log:', error);
       throw error;
     }
-  }
+  },
+
+
+    // Update existing logs
+    async updateLog(logType: LogType, id: string, updates: any): Promise<any> {
+      const table = {
+        weight: 'weight_logs',
+        body: 'body_condition_logs',
+        vet: 'vet_visit_logs'
+      }[logType];
+  
+      const { data, error } = await supabase
+        .from(table)
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+  
+      if (error) throw error;
+      return data;
+    },
+  
+    // Delete logs
+    async deleteLog(logType: LogType, id: string): Promise<void> {
+      const table = {
+        weight: 'weight_logs',
+        body: 'body_condition_logs',
+        vet: 'vet_visit_logs'
+      }[logType];
+  
+      const { error } = await supabase
+        .from(table)
+        .delete()
+        .eq('id', id);
+  
+      if (error) throw error;
+    }
 };

@@ -15,6 +15,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Pet, BodyConditionLog, WeightLog, VetVisitLog } from "../../types";
 import { petService } from "../../services/petService";
 import { useAuth } from "../../contexts/AuthContext";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 type RootStackParamList = {
   SingleProfile: { id: string };
@@ -23,7 +24,6 @@ type RootStackParamList = {
 };
 
 type Props = NativeStackScreenProps<RootStackParamList, "SingleProfile">;
-
 
 function getThisMonthLogs(
   logs_bodycondition: BodyConditionLog[],
@@ -61,16 +61,29 @@ const PetCard = ({ pet }: { pet: Pet }) => (
 );
 
 // Tab components
-const WeightLogsTab = ({ logs, onAddNew }: { logs: WeightLog[], onAddNew: (weight: number) => void }) => {
-  const [weight, setWeight] = useState('');
+const WeightLogsTab = ({
+  logs,
+  onAddNew,
+}: {
+  logs: WeightLog[];
+  onAddNew: (weight: number, date: Date) => void;
+}) => {
+  const [weight, setWeight] = useState("");
+  const [date, setDate] = useState(new Date());
 
   const handleAddWeight = () => {
-    if (weight.trim() === '') return;
+    if (weight.trim() === "") return;
     const weightValue = parseFloat(weight);
     if (isNaN(weightValue)) return;
-    
-    onAddNew(weightValue);
-    setWeight('');
+
+    onAddNew(weightValue, date);
+    setWeight("");
+  };
+
+  const onDateChange = (event: any, selectedDate?: Date) => {
+    if (selectedDate) {
+      setDate(selectedDate);
+    }
   };
 
   return (
@@ -89,7 +102,7 @@ const WeightLogsTab = ({ logs, onAddNew }: { logs: WeightLog[], onAddNew: (weigh
           <Text style={styles.noDataText}>No weight logs available</Text>
         )}
       </ScrollView>
-      
+
       <View style={styles.addLogContainer}>
         <TextInput
           style={styles.logInput}
@@ -98,6 +111,10 @@ const WeightLogsTab = ({ logs, onAddNew }: { logs: WeightLog[], onAddNew: (weigh
           onChangeText={setWeight}
           keyboardType="numeric"
         />
+        <View style={styles.datePicker}>
+          <DateTimePicker value={date} mode="date" onChange={onDateChange} />
+        </View>
+
         <TouchableOpacity style={styles.addLogButton} onPress={handleAddWeight}>
           <Text style={styles.addLogButtonText}>Add</Text>
         </TouchableOpacity>
@@ -106,13 +123,26 @@ const WeightLogsTab = ({ logs, onAddNew }: { logs: WeightLog[], onAddNew: (weigh
   );
 };
 
-const BodyConditionTab = ({ logs, onAddNew }: { logs: BodyConditionLog[], onAddNew: (condition: string) => void }) => {
-  const [bodyCondition, setBodyCondition] = useState('');
+const BodyConditionTab = ({
+  logs,
+  onAddNew,
+}: {
+  logs: BodyConditionLog[];
+  onAddNew: (condition: string, date: Date) => void;
+}) => {
+  const [bodyCondition, setBodyCondition] = useState("");
+  const [date, setDate] = useState(new Date());
 
   const handleAddBodyCondition = () => {
-    if (bodyCondition.trim() === '') return;
-    onAddNew(bodyCondition);
-    setBodyCondition('');
+    if (bodyCondition.trim() === "") return;
+    onAddNew(bodyCondition, date);
+    setBodyCondition("");
+  };
+
+  const onDateChange = (event: any, selectedDate?: Date) => {
+    if (selectedDate) {
+      setDate(selectedDate);
+    }
   };
 
   return (
@@ -130,10 +160,12 @@ const BodyConditionTab = ({ logs, onAddNew }: { logs: BodyConditionLog[], onAddN
             </View>
           ))
         ) : (
-          <Text style={styles.noDataText}>No body condition logs available</Text>
+          <Text style={styles.noDataText}>
+            No body condition logs available
+          </Text>
         )}
       </ScrollView>
-      
+
       <View style={styles.addLogContainer}>
         <TextInput
           style={styles.logInput}
@@ -141,7 +173,13 @@ const BodyConditionTab = ({ logs, onAddNew }: { logs: BodyConditionLog[], onAddN
           value={bodyCondition}
           onChangeText={setBodyCondition}
         />
-        <TouchableOpacity style={styles.addLogButton} onPress={handleAddBodyCondition}>
+        <View style={styles.datePicker}>
+          <DateTimePicker value={date} mode="date" onChange={onDateChange} />
+        </View>
+        <TouchableOpacity
+          style={styles.addLogButton}
+          onPress={handleAddBodyCondition}
+        >
           <Text style={styles.addLogButtonText}>Add</Text>
         </TouchableOpacity>
       </View>
@@ -154,14 +192,21 @@ const VetVisitsTab = ({
   onAddNew,
 }: {
   logs: VetVisitLog[] | null;
-  onAddNew: (notes: string) => void;
+  onAddNew: (notes: string, date: Date) => void;
 }) => {
-  const [notes, setNotes] = useState('');
+  const [notes, setNotes] = useState("");
+  const [date, setDate] = useState(new Date());
 
   const handleAddVetVisit = () => {
-    if (notes.trim() === '') return;
-    onAddNew(notes);
-    setNotes('');
+    if (notes.trim() === "") return;
+    onAddNew(notes, date);
+    setNotes("");
+  };
+
+  const onDateChange = (event: any, selectedDate?: Date) => {
+    if (selectedDate) {
+      setDate(selectedDate);
+    }
   };
 
   return (
@@ -180,7 +225,7 @@ const VetVisitsTab = ({
           <Text style={styles.noDataText}>No vet visit logs available</Text>
         )}
       </ScrollView>
-      
+
       <View style={styles.addLogContainer}>
         <TextInput
           style={[styles.logInput, styles.logInputMultiline]}
@@ -190,7 +235,15 @@ const VetVisitsTab = ({
           multiline
           numberOfLines={2}
         />
-        <TouchableOpacity style={styles.addLogButton} onPress={handleAddVetVisit}>
+
+        <View style={styles.datePicker}>
+          <DateTimePicker value={date} mode="date" onChange={onDateChange} />
+        </View>
+
+        <TouchableOpacity
+          style={styles.addLogButton}
+          onPress={handleAddVetVisit}
+        >
           <Text style={styles.addLogButtonText}>Add</Text>
         </TouchableOpacity>
       </View>
@@ -315,108 +368,132 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
     }
   }, [pet]);
 
-  const handleAddWeightLog = useCallback(async (weight: number) => {
-    if (!pet) return;
+  const handleAddWeightLog = useCallback(
+    async (weight: number, date: Date) => {
+      if (!pet) return;
 
-    try {
-      const newWeightLog = {
-        pet_id: pet.id,
-        weight: weight,
-        date: new Date().toISOString(),
-      };
-
-      const addedWeightLog = await petService.addWeightLog(newWeightLog);
-
-      // Update the pet state with the new weight log
-      setPet((prevPet) => {
-        if (!prevPet) return null;
-
-        const updatedWeightLogs = [addedWeightLog, ...prevPet.logs_weight];
-
-        return {
-          ...prevPet,
-          logs_weight: updatedWeightLogs,
+      try {
+        const newWeightLog = {
+          pet_id: pet.id,
+          weight: weight,
+          date: date.toISOString(),
         };
-      });
 
-      console.log('Added new weight log:', addedWeightLog);
-    } catch (err) {
-      console.error('Error adding weight log:', err);
-      // In a real app, you would show an error message to the user
-    }
-  }, [pet]);
+        const addedWeightLog = await petService.addWeightLog(newWeightLog);
 
-  const handleAddBodyConditionLog = useCallback(async (condition: string) => {
-    if (!pet) return;
+        // Update the pet state with the new weight log
+        setPet((prevPet) => {
+          if (!prevPet) return null;
 
-    try {
-      const newBodyConditionLog = {
-        pet_id: pet.id,
-        body_condition: condition,
-        date: new Date().toISOString(),
-      };
+          const updatedWeightLogs = [addedWeightLog, ...prevPet.logs_weight];
 
-      const addedBodyConditionLog = await petService.addBodyConditionLog(newBodyConditionLog);
+          return {
+            ...prevPet,
+            logs_weight: updatedWeightLogs,
+          };
+        });
 
-      // Update the pet state with the new body condition log
-      setPet((prevPet) => {
-        if (!prevPet) return null;
+        console.log("Added new weight log:", addedWeightLog);
+      } catch (err) {
+        console.error("Error adding weight log:", err);
+        // In a real app, you would show an error message to the user
+      }
+    },
+    [pet]
+  );
 
-        const updatedBodyConditionLogs = [addedBodyConditionLog, ...prevPet.logs_bodycondition];
+  const handleAddBodyConditionLog = useCallback(
+    async (condition: string, date: Date) => {
+      if (!pet) return;
 
-        return {
-          ...prevPet,
-          logs_bodycondition: updatedBodyConditionLogs,
+      try {
+        const newBodyConditionLog = {
+          pet_id: pet.id,
+          body_condition: condition,
+          date: date.toISOString(),
         };
-      });
 
-      console.log('Added new body condition log:', addedBodyConditionLog);
-    } catch (err) {
-      console.error('Error adding body condition log:', err);
-      // In a real app, you would show an error message to the user
-    }
-  }, [pet]);
+        const addedBodyConditionLog = await petService.addBodyConditionLog(
+          newBodyConditionLog
+        );
 
-  const handleAddVetVisit = useCallback(async (notes: string) => {
-    if (!pet) return;
+        // Update the pet state with the new body condition log
+        setPet((prevPet) => {
+          if (!prevPet) return null;
 
-    try {
-      const newVetVisit = {
-        pet_id: pet.id,
-        notes: notes,
-        date: new Date().toISOString(),
-      };
+          const updatedBodyConditionLogs = [
+            addedBodyConditionLog,
+            ...prevPet.logs_bodycondition,
+          ];
 
-      const addedVetVisit = await petService.addVetVisitLog(newVetVisit);
+          return {
+            ...prevPet,
+            logs_bodycondition: updatedBodyConditionLogs,
+          };
+        });
 
-      // Update the pet state with the new vet visit
-      setPet((prevPet) => {
-        if (!prevPet) return null;
+        console.log("Added new body condition log:", addedBodyConditionLog);
+      } catch (err) {
+        console.error("Error adding body condition log:", err);
+        // In a real app, you would show an error message to the user
+      }
+    },
+    [pet]
+  );
 
-        const updatedVetVisits = prevPet.logs_vet_visits
-          ? [addedVetVisit, ...prevPet.logs_vet_visits]
-          : [addedVetVisit];
+  const handleAddVetVisit = useCallback(
+    async (notes: string, date: Date) => {
+      if (!pet) return;
 
-        return {
-          ...prevPet,
-          logs_vet_visits: updatedVetVisits,
+      try {
+        const newVetVisit = {
+          pet_id: pet.id,
+          notes: notes,
+          date: date.toISOString(),
         };
-      });
 
-      console.log("Added new vet visit:", addedVetVisit);
-    } catch (err) {
-      console.error("Error adding vet visit:", err);
-      // In a real app, you would show an error message to the user
-    }
-  }, [pet]);
+        const addedVetVisit = await petService.addVetVisitLog(newVetVisit);
+
+        // Update the pet state with the new vet visit
+        setPet((prevPet) => {
+          if (!prevPet) return null;
+
+          const updatedVetVisits = prevPet.logs_vet_visits
+            ? [addedVetVisit, ...prevPet.logs_vet_visits]
+            : [addedVetVisit];
+
+          return {
+            ...prevPet,
+            logs_vet_visits: updatedVetVisits,
+          };
+        });
+
+        console.log("Added new vet visit:", addedVetVisit);
+      } catch (err) {
+        console.error("Error adding vet visit:", err);
+        // In a real app, you would show an error message to the user
+      }
+    },
+    [pet]
+  );
 
   // Render the active tab content
   const renderTabContent = () => {
     switch (activeTab) {
       case "weight":
-        return <WeightLogsTab logs={pet?.logs_weight || []} onAddNew={handleAddWeightLog} />;
+        return (
+          <WeightLogsTab
+            logs={pet?.logs_weight || []}
+            onAddNew={handleAddWeightLog}
+          />
+        );
       case "bodyCondition":
-        return <BodyConditionTab logs={pet?.logs_bodycondition || []} onAddNew={handleAddBodyConditionLog} />;
+        return (
+          <BodyConditionTab
+            logs={pet?.logs_bodycondition || []}
+            onAddNew={handleAddBodyConditionLog}
+          />
+        );
       case "vetVisits":
         return (
           <VetVisitsTab
@@ -460,14 +537,19 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
 
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
-      <View style={[styles.headerSection, isLogsCollapsed && styles.expandedHeaderSection]}>
+      <View
+        style={[
+          styles.headerSection,
+          isLogsCollapsed && styles.expandedHeaderSection,
+        ]}
+      >
         <ScrollView>
           <View style={styles.headerRow}>
             <PetCard pet={pet} />
             <View style={styles.headerButtons}>
-              <TouchableOpacity 
-                style={styles.addPetButton} 
-                onPress={() => navigation.navigate('AddPet')}
+              <TouchableOpacity
+                style={styles.addPetButton}
+                onPress={() => navigation.navigate("AddPet")}
               >
                 <Text style={styles.addPetButtonText}>Add Pet</Text>
               </TouchableOpacity>
@@ -494,25 +576,29 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
         </ScrollView>
       </View>
 
-      <View style={[
-        styles.logsSection, 
-        isLogsCollapsed && styles.collapsedLogsSection,
-        { paddingBottom: isLogsCollapsed ? insets.bottom : 0 }
-      ]}>
-        <TouchableOpacity 
+      <View
+        style={[
+          styles.logsSection,
+          isLogsCollapsed && styles.collapsedLogsSection,
+          { paddingBottom: isLogsCollapsed ? insets.bottom : 0 },
+        ]}
+      >
+        <TouchableOpacity
           style={styles.logsHeader}
           onPress={() => setIsLogsCollapsed(!isLogsCollapsed)}
         >
           <Text style={styles.logsHeaderText}>Health Logs</Text>
-          <Image 
-            source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/chevron-down.png' }}
+          <Image
+            source={{
+              uri: "https://img.icons8.com/ios-glyphs/30/000000/chevron-down.png",
+            }}
             style={[
               styles.arrowIcon,
-              isLogsCollapsed && styles.arrowIconCollapsed
+              isLogsCollapsed && styles.arrowIconCollapsed,
             ]}
           />
         </TouchableOpacity>
-        
+
         {!isLogsCollapsed && (
           <View style={styles.logsContent}>
             <View style={styles.tabBar}>
@@ -800,5 +886,9 @@ const styles = StyleSheet.create({
     marginTop: 24,
     color: "red",
     fontSize: 16,
+  },
+  datePicker: {
+    marginRight: 12,
+    alignSelf: "center",
   },
 });
