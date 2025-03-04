@@ -288,7 +288,7 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
 
   // Render the active tab content
   const renderTabContent = () => {
-    if(!pet) return null;
+    if (!pet) return null;
 
     switch (activeTab) {
       case "weight":
@@ -323,7 +323,7 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
     }
   };
 
-  if (loading) {
+  if (loading && !pet) {
     return (
       <View style={[styles.container, { paddingBottom: insets.bottom }]}>
         <ActivityIndicator style={styles.loader} size="large" color="#007AFF" />
@@ -472,6 +472,27 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
           </View>
         )}
       </View>
+
+      {loading ? (
+        <View style={[
+          styles.container, 
+          { 
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(255, 255, 255, 0.8)'
+          }
+        ]}>
+          <ActivityIndicator
+            size="large"
+            color="#007AFF"
+          />
+        </View>
+      ) : null}
     </View>
   );
 };

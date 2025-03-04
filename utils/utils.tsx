@@ -2,6 +2,10 @@ import { petService } from "@/services/petService";
 import { BodyConditionLog, VetVisitLog, WeightLog } from "@/types";
 
 
+export const toUTCString = (date: Date): string => {
+  return date.toISOString();
+};
+
 
 export const handleLogsUpdate = async (
   logId: string,

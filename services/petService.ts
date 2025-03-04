@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { Pet, WeightLog, BodyConditionLog, VetVisitLog } from "../types";
 import "react-native-url-polyfill/auto";
+import { toUTCString } from "@/utils/utils";
 
 type LogType = "weight" | "body" | "vet";
 
@@ -304,7 +305,7 @@ export const petService = {
         // Ensure date is in UTC format
         const updatedData = {
           ...updates,
-          date: updates.date.toISOString()
+          date: updates.date ? new Date(updates.date).toISOString() : undefined
         };
         
     const { data, error } = await supabase
