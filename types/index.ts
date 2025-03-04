@@ -178,7 +178,7 @@ export const logsStyles : any  = {
   dropdown: {
     position: 'absolute',
     right: 20,
-    top: '22%',
+    top: '%',
     backgroundColor: 'white',
     borderRadius: 8,
     shadowColor: '#000',

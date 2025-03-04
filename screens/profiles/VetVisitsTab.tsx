@@ -16,10 +16,12 @@ export const VetVisitsTab = ({
   logs,
   onAddNew,
   petId,
+  fetchPet
 }: {
   logs: VetVisitLog[] | null;
   onAddNew: (notes: string, date: Date) => void;
   petId: string;
+  fetchPet: () => void;
 }) => {
   const { user } = useAuth();
 
@@ -75,7 +77,7 @@ export const VetVisitsTab = ({
                   <TouchableOpacity
                     style={styles.saveButton}
                     onPress={() =>
-                      handleLogsUpdate(log.id, petId, editingLog, setEditingLog)
+                      handleLogsUpdate(log.id, editingLog, setEditingLog)
                     }
                   >
                     <Text style={styles.saveButtonText}>Save</Text>
@@ -110,6 +112,9 @@ export const VetVisitsTab = ({
                             date: log.date.toString(),
                             pet_id: petId,
                           });
+                          setTimeout(() => {
+                            fetchPet();
+                          }, 1000);
                           setShowDropdown(null);
                         }}
                       >
@@ -118,7 +123,10 @@ export const VetVisitsTab = ({
                       <TouchableOpacity
                         style={[styles.dropdownItem, styles.deleteItem]}
                         onPress={() => {
-                          handleLogsDelete(log.id, user.id);
+                          handleLogsDelete(log.id , "vet");
+                          setTimeout(() => {
+                            fetchPet();
+                          }, 1000);
                           setShowDropdown(null);
                         }}
                       >

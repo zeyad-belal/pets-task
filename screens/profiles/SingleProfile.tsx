@@ -34,7 +34,7 @@ function getThisMonthLogs(
   const currentYear = new Date().getFullYear();
 
   const latestBodyConditionLog = logs_bodycondition
-    .filter(
+    ?.filter(
       (log) =>
         new Date(log.date).getMonth() === currentMonth &&
         new Date(log.date).getFullYear() === currentYear
@@ -42,7 +42,7 @@ function getThisMonthLogs(
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
 
   const latestWeightLog = logs_weight
-    .filter(
+    ?.filter(
       (log) =>
         new Date(log.date).getMonth() === currentMonth &&
         new Date(log.date).getFullYear() === currentYear
@@ -110,7 +110,6 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
         setPet(fetchedPet);
       } else {
         // For demo purposes, if no pet is found in Supabase, use mock data
-        // In a real app, you would show an error message
         const mockPet: Pet = {
           id: "1",
           name: "Max",
@@ -298,6 +297,7 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
             logs={pet?.logs_weight || []}
             onAddNew={handleAddWeightLog}
             petId={pet.id}
+            fetchPet={fetchPet}
           />
         );
       case "bodyCondition":
@@ -306,14 +306,16 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
             logs={pet?.logs_bodycondition || []}
             onAddNew={handleAddBodyConditionLog}
             petId={pet.id}
+            fetchPet={fetchPet}
           />
         );
       case "vetVisits":
         return (
           <VetVisitsTab
-            logs={pet?.logs_vet_visits || null}
+            logs={pet?.logs_vet_visits || []}
             onAddNew={handleAddVetVisit}
             petId={pet.id}
+            fetchPet={fetchPet}
           />
         );
       default:
@@ -349,7 +351,7 @@ export const SingleProfile: React.FC<Props> = ({ route, navigation }) => {
       </View>
     );
   }
-console.log('pet,',pet)
+
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       <View

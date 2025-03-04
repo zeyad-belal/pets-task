@@ -16,10 +16,12 @@ export const BodyConditionTab = ({
   logs,
   onAddNew,
   petId,
+  fetchPet,
 }: {
   logs: BodyConditionLog[];
   onAddNew: (condition: string, date: Date) => void;
   petId: string;
+  fetchPet: () => void;
 }) => {
   const { user } = useAuth();
 
@@ -42,7 +44,6 @@ export const BodyConditionTab = ({
 
   if (!user) return null;
 
-  
   return (
     <View style={styles.tabContentContainer}>
       <ScrollView style={styles.tabContent}>
@@ -73,9 +74,13 @@ export const BodyConditionTab = ({
                   />
                   <TouchableOpacity
                     style={styles.saveButton}
-                    onPress={() =>
-                      handleLogsUpdate(log.id, petId, editingLog, setEditingLog)
-                    }
+                    onPress={() => {
+                      handleLogsUpdate(log.id, editingLog, setEditingLog);
+                      setTimeout(() => {
+                        fetchPet();
+                      }, 1000);
+                      setShowDropdown(null);
+                    }}
                   >
                     <Text style={styles.saveButtonText}>Save</Text>
                   </TouchableOpacity>
@@ -83,7 +88,7 @@ export const BodyConditionTab = ({
               ) : (
                 // View mode
                 <View style={styles.logItemContent}>
-                  <View >
+                  <View>
                     <Text style={styles.logValue}>{log.body_condition}</Text>
                     <Text style={styles.logDate}>
                       {new Date(log.date).toLocaleDateString()}
@@ -117,7 +122,13 @@ export const BodyConditionTab = ({
                       </TouchableOpacity>
                       <TouchableOpacity
                         style={[styles.dropdownItem, styles.deleteItem]}
-                        onPress={() => handleLogsDelete(log.id, user.id)}
+                        onPress={() => {
+                          handleLogsDelete(log.id, "body");
+                          setTimeout(() => {
+                            fetchPet();
+                          }, 1000);
+                          setShowDropdown(null);
+                        }}
                       >
                         <Text style={styles.deleteText}>Delete</Text>
                       </TouchableOpacity>

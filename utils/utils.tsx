@@ -5,7 +5,6 @@ import { BodyConditionLog, VetVisitLog, WeightLog } from "@/types";
 
 export const handleLogsUpdate = async (
   logId: string,
-  petId: string,
   editingLog: WeightLog | BodyConditionLog | VetVisitLog,
   setEditingLog: React.Dispatch<React.SetStateAction<any>>
 ) => {
@@ -30,20 +29,16 @@ export const handleLogsUpdate = async (
         date: editingLog.date.toString(),
       });
     }
-
-    // Refresh logs by refetching the pet
-    petId ? await petService.getPetById(petId) : null;
     setEditingLog(null);
   } catch (error) {
     console.error("Error updating log:", error);
   }
 };
 
-export const handleLogsDelete = async (logId: string, petId: string) => {
+export const handleLogsDelete = async (logId: string, logType:'weight' | 'body' | 'vet') => {
   try {
-    await petService.deleteLog("weight", logId);
-    // Refresh logs by refetching the pet
-    petId ? await petService.getPetById(petId) : null;
+    await petService.deleteLog(logType, logId);
+
   } catch (error) {
     console.error("Error deleting log:", error);
   }

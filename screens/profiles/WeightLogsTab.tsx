@@ -16,10 +16,12 @@ export const WeightLogsTab = ({
   logs,
   onAddNew,
   petId,
+  fetchPet,
 }: {
   petId: string;
   logs: WeightLog[];
   onAddNew: (weight: number, date: Date) => void;
+  fetchPet: () => void;
 }) => {
   const { user } = useAuth();
 
@@ -67,18 +69,24 @@ export const WeightLogsTab = ({
                     mode="date"
                     onChange={(event, selectedDate) => {
                       if (selectedDate) {
-                        setEditingLog({ ...editingLog, date: selectedDate.toString() });
+                        setEditingLog({
+                          ...editingLog,
+                          date: selectedDate.toString(),
+                        });
                       }
                     }}
                   />
-                    <TouchableOpacity
+                  <TouchableOpacity
                     style={styles.saveButton}
-                    onPress={() =>
-                      handleLogsUpdate(log.id, petId, editingLog, setEditingLog)
-                    }
-                    >
+                    onPress={() => {
+                      handleLogsUpdate(log.id, editingLog, setEditingLog);
+                      setTimeout(() => {
+                        fetchPet();
+                      }, 1000);
+                    }}
+                  >
                     <Text style={styles.saveButtonText}>Save</Text>
-                    </TouchableOpacity>
+                  </TouchableOpacity>
                 </View>
               ) : (
                 // View mode
@@ -117,7 +125,10 @@ export const WeightLogsTab = ({
                       <TouchableOpacity
                         style={[styles.dropdownItem, styles.deleteItem]}
                         onPress={() => {
-                          handleLogsDelete(log.id, user.id);
+                          handleLogsDelete(log.id, "weight");
+                          setTimeout(() => {
+                            fetchPet();
+                          }, 1000);
                           setShowDropdown(null);
                         }}
                       >
